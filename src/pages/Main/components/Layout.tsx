@@ -1,6 +1,11 @@
 import { css } from "@emotion/css";
 import { ReactNode } from "react";
 
+const red = "#f675a8";
+const green = "#c8ffe0";
+const blue = "#8ea7e9";
+const purple = "#beadfa";
+
 export function Layout({ children }: { children: ReactNode }) {
   return (
     <div
@@ -22,24 +27,29 @@ export function Layout({ children }: { children: ReactNode }) {
           justify-content: center;
           align-items: center;
 
-          filter: blur(100px);
+          filter: blur(50px);
 
           overflow: hidden;
         `}
       >
         <div
           className={css`
+            position: absolute;
+            z-index: 0;
+
             flex-shrink: 0;
 
-            width: 150vh;
-            height: 150vh;
+            width: 200vh;
+            height: 200vh;
 
-            background: radial-gradient(at 0% 0%, #ff9b9b 0%, transparent 60%),
-              radial-gradient(at 90% 30%, #bce29e 0%, transparent 60%),
-              radial-gradient(at 10% 70%, #8ea7e9 0%, transparent 60%),
-              radial-gradient(at 100% 100%, #beadfa 0%, transparent 60%);
+            background: radial-gradient(at 0% 0%, ${red} 0%, transparent 50%),
+              radial-gradient(at 5% 0%, ${red} 0%, transparent 30%),
+              radial-gradient(at 100% 100%, ${purple} 0%, transparent 50%),
+              radial-gradient(at 30% 50%, ${purple} 0%, transparent 30%),
+              radial-gradient(at 80% 10%, ${purple} 0%, transparent 40%),
+              radial-gradient(at 80% 60%, ${red} 0%, transparent 30%);
 
-            @keyframes rotate {
+            @keyframes background-rotate {
               0% {
                 transform: rotate(0deg);
               }
@@ -48,7 +58,35 @@ export function Layout({ children }: { children: ReactNode }) {
               }
             }
 
-            animation: rotate 10s linear infinite;
+            animation: background-rotate 15s linear infinite;
+          `}
+        />
+        <div
+          className={css`
+            position: absolute;
+            z-index: 1;
+
+            flex-shrink: 0;
+
+            width: 200vh;
+            height: 200vh;
+
+            background: radial-gradient(at 50% 100%, ${green} 0%, transparent 40%),
+              radial-gradient(at 35% 30%, ${green} 0%, transparent 40%),
+              radial-gradient(at 55% 35%, ${blue} 0%, transparent 30%),
+              radial-gradient(at 10% 70%, ${blue} 0%, transparent 30%),
+              radial-gradient(at 10% 70%, ${blue} 0%, transparent 30%);
+
+            @keyframes background-rotate-reverse {
+              0% {
+                transform: rotate(0deg);
+              }
+              100% {
+                transform: rotate(-360deg);
+              }
+            }
+
+            animation: background-rotate-reverse 20s linear infinite;
           `}
         />
       </div>
