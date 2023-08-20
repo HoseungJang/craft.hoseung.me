@@ -1,8 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 const tsconfig = JSON.parse(fs.readFileSync("./tsconfig.json").toString());
+const assetPaths = fs.readdirSync("./public").filter((assetPath) => !assetPath.endsWith("index.html"));
 
 const base = {
   entry: "./src/index.tsx",
@@ -32,6 +34,9 @@ const base = {
     new HtmlWebpackPlugin({
       template: "./public/index.html",
       minify: true,
+    }),
+    new CopyWebpackPlugin({
+      patterns: assetPaths.map((assetPath) => ({ from: `./public/${assetPath}`, to: assetPath })),
     }),
   ],
 };
