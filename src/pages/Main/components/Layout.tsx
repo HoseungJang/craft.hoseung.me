@@ -63,8 +63,6 @@ function Background({ vw, vh }: BackgroundProps) {
         justify-content: center;
         align-items: center;
 
-        filter: blur(50px);
-
         overflow: hidden;
       `}
     >
@@ -95,6 +93,8 @@ function Background({ vw, vh }: BackgroundProps) {
           }
 
           animation: background-rotate 15s linear infinite;
+
+          filter: blur(50px);
         `}
       />
       <div
@@ -123,6 +123,8 @@ function Background({ vw, vh }: BackgroundProps) {
           }
 
           animation: background-rotate-reverse 20s linear infinite;
+
+          filter: blur(50px);
         `}
       />
     </div>
