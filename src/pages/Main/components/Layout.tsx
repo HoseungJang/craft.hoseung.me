@@ -50,10 +50,10 @@ export function Layout({ children }: LayoutProps) {
   );
 }
 
-const red = "#f675a8";
-const green = "#c8ffe0";
-const blue = "#8ea7e9";
-const purple = "#beadfa";
+const red = "#fddde6";
+const green = "#e5fdd1";
+const blue = "#b9f3fc";
+const purple = "#d6cadd";
 
 function Background() {
   const [vw, vh] = useViewportSize();
@@ -88,7 +88,7 @@ function Background() {
             radial-gradient(at 100% 100%, ${purple} 0%, transparent 50%),
             radial-gradient(at 30% 50%, ${purple} 0%, transparent 30%),
             radial-gradient(at 80% 10%, ${purple} 0%, transparent 40%),
-            radial-gradient(at 80% 60%, ${red} 0%, transparent 30%);
+            radial-gradient(at 80% 60%, ${red} 0%, transparent 40%);
 
           @keyframes background-rotate {
             0% {
@@ -112,8 +112,10 @@ function Background() {
           width: ${backgroundSize}px;
           height: ${backgroundSize}px;
 
-          background: radial-gradient(at 50% 100%, ${green} 0%, transparent 40%),
-            radial-gradient(at 35% 30%, ${green} 0%, transparent 40%),
+          background: radial-gradient(at 0% 0%, ${red} 0%, transparent 50%),
+            radial-gradient(at 5% 0%, ${red} 0%, transparent 30%),
+            radial-gradient(at 50% 100%, ${green} 0%, transparent 40%),
+            radial-gradient(at 40% 30%, ${green} 0%, transparent 30%),
             radial-gradient(at 55% 35%, ${blue} 0%, transparent 30%),
             radial-gradient(at 10% 70%, ${blue} 0%, transparent 30%),
             radial-gradient(at 10% 70%, ${blue} 0%, transparent 30%);
