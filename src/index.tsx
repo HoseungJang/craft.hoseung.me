@@ -13,6 +13,15 @@ injectGlobal`
     font-size: 100%;
     font-weight: 300;
     font-family: 'Nunito', sans-serif;
+
+    * {
+      box-sizing: border-box;
+    }
+
+    a {
+      color: #000000;
+      text-decoration: none;
+    }
   }
 `;
 
