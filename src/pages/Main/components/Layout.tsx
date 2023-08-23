@@ -58,7 +58,7 @@ const purple = "#beadfa";
 function Background() {
   const [vw, vh] = useViewportSize();
 
-  const backgroundSize = vw > vh ? vw * 1.2 : vh * 1.2;
+  const backgroundSize = vw > vh ? vw * 1.5 : vh * 1.5;
 
   return (
     <div
@@ -100,8 +100,6 @@ function Background() {
           }
 
           animation: background-rotate 15s linear infinite;
-
-          filter: blur(50px);
         `}
       />
       <div
@@ -130,8 +128,6 @@ function Background() {
           }
 
           animation: background-rotate-reverse 20s linear infinite;
-
-          filter: blur(50px);
         `}
       />
     </div>
