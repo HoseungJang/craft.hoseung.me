@@ -14,5 +14,5 @@ export function useViewportSize() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return [vw, vh];
+  return [vw, vh] as const;
 }
