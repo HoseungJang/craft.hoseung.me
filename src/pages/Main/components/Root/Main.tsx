@@ -60,10 +60,10 @@ export function Main() {
           display: flex;
         `}
       >
-        {columns.map((column) => (
-          <Column>
-            {column.map((row) => (
-              <Row>
+        {columns.map((column, index) => (
+          <Column key={index}>
+            {column.map((row, index) => (
+              <Row key={index}>
                 <AspectRatio width={row.width} height={row.height} />
               </Row>
             ))}
