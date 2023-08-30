@@ -1,61 +1,12 @@
 import { css } from "@emotion/css";
-import { ReactNode } from "react";
 import { useViewportSize } from "hooks/useViewportSize";
-
-interface LayoutProps {
-  children: ReactNode;
-}
-
-export function Layout({ children }: LayoutProps) {
-  return (
-    <div
-      className={css`
-        width: 100%;
-        min-height: 100vh;
-      `}
-    >
-      <div
-        className={css`
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          z-index: 0;
-        `}
-      >
-        <Background />
-      </div>
-      <div
-        className={css`
-          position: relative;
-          z-index: 1;
-
-          width: 100%;
-
-          display: flex;
-          justify-content: center;
-        `}
-      >
-        <div
-          className={css`
-            width: 100%;
-            max-width: 1440px;
-          `}
-        >
-          {children}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 const red = "#fddde6";
 const green = "#e5fdd1";
 const blue = "#b9f3fc";
 const purple = "#d6cadd";
 
-function Background() {
+export function Background() {
   const [vw, vh] = useViewportSize();
 
   const backgroundSize = vw > vh ? vw * 1.5 : vh * 1.5;
