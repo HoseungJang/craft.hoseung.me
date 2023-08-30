@@ -18,7 +18,7 @@ class BrowserHistory {
   }
 
   public get state() {
-    return window.history.state;
+    return window.history.state ?? {};
   }
 
   public get pathname() {

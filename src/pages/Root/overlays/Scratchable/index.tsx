@@ -3,9 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { Scratchable as ScratchableRenderer } from "scratchable";
 import { AspectRatio } from "components/AspectRatio";
 import { OverlayProps } from "../../models/overlay";
+import { history } from "utils/history";
 
 export function Scratchable({ isOpen }: OverlayProps) {
-  const [opacity, setOpacity] = useState(0);
+  const [opacity, setOpacity] = useState(() => (history.state.animate ? 0 : 1));
 
   useEffect(() => {
     let started: number | null = null;
@@ -35,7 +36,10 @@ export function Scratchable({ isOpen }: OverlayProps) {
     };
 
     if (isOpen) {
-      animate({ from: 0, to: 1 });
+      if (history.state.animate) {
+        animate({ from: 0, to: 1 });
+        history.replace(history.pathname, {});
+      }
     } else {
       animate({ from: 1, to: 0 });
     }

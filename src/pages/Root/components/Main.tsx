@@ -46,7 +46,7 @@ export function Main() {
                     }
 
                     e.preventDefault();
-                    history.push(row.pathname);
+                    history.push(row.pathname, { animate: true });
                   }}
                 >
                   <div
