@@ -11,7 +11,7 @@ export function Layout({ background, children }: Props) {
     <div
       className={css`
         width: 100%;
-        min-height: 100vh;
+        min-height: 100%;
       `}
     >
       <div
