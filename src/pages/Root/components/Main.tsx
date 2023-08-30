@@ -2,35 +2,9 @@ import { css } from "@emotion/css";
 import { AspectRatio } from "components/AspectRatio";
 import { useViewportSize } from "hooks/useViewportSize";
 import { ReactNode, useMemo } from "react";
-
-interface Data {
-  width: number;
-  height: number;
-}
-
-const data: Data[] = [
-  { width: 1, height: 0.5 },
-  { width: 1, height: 1.2 },
-  { width: 1, height: 0.8 },
-  { width: 1, height: 1 },
-  { width: 1, height: 0.7 },
-  { width: 1, height: 0.7 },
-  { width: 1, height: 0.8 },
-  { width: 1, height: 0.7 },
-  { width: 1, height: 0.4 },
-  { width: 1, height: 1.3 },
-  { width: 1, height: 0.4 },
-  { width: 1, height: 0.8 },
-  { width: 1, height: 0.3 },
-  { width: 1, height: 1.2 },
-  { width: 1, height: 1.2 },
-  { width: 1, height: 0.7 },
-  { width: 1, height: 0.7 },
-  { width: 1, height: 0.8 },
-  { width: 1, height: 1.3 },
-  { width: 1, height: 0.6 },
-  { width: 1, height: 1 },
-];
+import { history } from "utils/history";
+import { OVERLAY_ROUTES } from "../constants/overlay";
+import { OverlayRoute } from "../models/overlay";
 
 export function Main() {
   const [vw] = useViewportSize();
@@ -38,10 +12,10 @@ export function Main() {
   const columnLength = vw >= 1000 ? 3 : vw >= 500 ? 2 : 1;
 
   const columns = useMemo(() => {
-    return data.reduce((acc, cur, index) => {
+    return OVERLAY_ROUTES.reduce((acc, cur, index) => {
       acc[index % columnLength].push(cur);
       return acc;
-    }, Array.from({ length: columnLength }).map(() => []) as Data[][]);
+    }, Array.from({ length: columnLength }).map(() => []) as OverlayRoute[][]);
   }, [columnLength]);
 
   return (
@@ -64,7 +38,19 @@ export function Main() {
           <Column key={index}>
             {column.map((row, index) => (
               <Row key={index}>
-                <AspectRatio width={row.width} height={row.height} />
+                <a
+                  href={row.pathname}
+                  onClick={(e) => {
+                    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
+                      return;
+                    }
+
+                    e.preventDefault();
+                    history.push(row.pathname);
+                  }}
+                >
+                  <AspectRatio width={row.thumbnail.ratio.width} height={row.thumbnail.ratio.height} />
+                </a>
               </Row>
             ))}
           </Column>

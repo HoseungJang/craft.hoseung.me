@@ -1,5 +1,5 @@
 import { injectGlobal } from "@emotion/css";
-import { Main } from "pages/Main";
+import { Root } from "pages/Root";
 import { createRoot } from "react-dom/client";
 
 injectGlobal`
@@ -29,4 +29,4 @@ injectGlobal`
 `;
 
 const root = createRoot(document.getElementById("root")!);
-root.render(<Main />);
+root.render(<Root />);

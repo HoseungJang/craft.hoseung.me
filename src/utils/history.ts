@@ -1,11 +1,11 @@
-interface Event {
+export interface HistoryEvent {
   action: "push" | "replace" | "pop";
   pathname: string;
   state?: any;
 }
 
 interface Listener {
-  (e: Event): void;
+  (e: HistoryEvent): void;
 }
 
 class BrowserHistory {
@@ -51,7 +51,7 @@ class BrowserHistory {
     };
   }
 
-  private emit(e: Event) {
+  private emit(e: HistoryEvent) {
     this.listeners.forEach((listener) => listener(e));
   }
 }
