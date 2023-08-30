@@ -49,7 +49,36 @@ export function Main() {
                     history.push(row.pathname);
                   }}
                 >
-                  <AspectRatio width={row.thumbnail.ratio.width} height={row.thumbnail.ratio.height} />
+                  <div
+                    className={css`
+                      padding: 16px;
+                    `}
+                  >
+                    <AspectRatio width={row.thumbnail.ratio.width} height={row.thumbnail.ratio.height}>
+                      <img
+                        className={css`
+                          width: 100%;
+                          height: 100%;
+
+                          border-radius: 16px;
+
+                          overflow: hidden;
+                        `}
+                        src={row.thumbnail.url}
+                        alt={row.title}
+                      />
+                    </AspectRatio>
+                    <div
+                      className={css`
+                        margin-top: 12px;
+
+                        font-size: 1.4rem;
+                        font-weight: 500;
+                      `}
+                    >
+                      {row.title}
+                    </div>
+                  </div>
                 </a>
               </Row>
             ))}

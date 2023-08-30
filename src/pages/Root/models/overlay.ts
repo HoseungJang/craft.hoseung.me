@@ -14,6 +14,7 @@ export interface OverlayRoute {
       height: number;
     };
   };
+  title: string;
   pathname: string;
   component: OverlayComponent;
 }

@@ -18,7 +18,7 @@ export function Header() {
           color: rgba(0, 0, 0, 0.7);
         `}
       >
-        Craft - WIP...
+        Craft
       </h1>
       <div
         className={css`
