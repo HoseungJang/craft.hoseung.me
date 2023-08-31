@@ -1,10 +1,10 @@
 import { css } from "@emotion/css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Scratchable as ScratchableRenderer } from "scratchable";
 import { AspectRatio } from "components/AspectRatio";
 import { OverlayProps } from "../../models/overlay";
 import { Animator } from "utils/animation";
-import { easeOutBack, easeOutBounce, easeOutCubic, easeOutQuint } from "utils/easings";
+import { easeInBack, easeInOutQuart, easeOutBack, easeOutBounce, easeOutCubic } from "utils/easings";
 import { scrollLock } from "utils/scroll";
 
 export function Scratchable({ isOpen }: OverlayProps) {
@@ -31,17 +31,11 @@ export function Scratchable({ isOpen }: OverlayProps) {
     }
 
     if (isOpen) {
-      container.style.opacity = "1";
-      container.style.transform = `translate3d(0px, ${window.innerHeight}px, 0px)`;
-
       const containerAnimator = new Animator(container, {
         translateY: { from: window.innerHeight, to: 0 },
         duration: 800,
         easing: easeOutBounce,
       });
-
-      title.style.opacity = "0";
-      title.style.transform = "translate3d(0px, 70px, 0px)";
 
       const titleAnimator = new Animator(title, {
         opacity: { from: 0, to: 1 },
@@ -50,9 +44,6 @@ export function Scratchable({ isOpen }: OverlayProps) {
         delay: 1000,
         easing: easeOutCubic,
       });
-
-      link.style.opacity = "0";
-      link.style.transform = "translate3d(0px, 70px, 0px)";
 
       const linkAnimator = new Animator(link, {
         opacity: { from: 0, to: 1 },
@@ -67,17 +58,29 @@ export function Scratchable({ isOpen }: OverlayProps) {
       linkAnimator.play();
     } else {
       const containerAnimator = new Animator(container, {
-        opacity: { from: 1, to: 0 },
-        scale: { from: 1, to: 1.5 },
-        duration: 1500,
-        easing: easeOutQuint,
+        translateY: { from: 0, to: window.innerHeight },
+        duration: 800,
+        delay: 600,
+        easing: easeInOutQuart,
+      });
+
+      const titleAnimator = new Animator(title, {
+        scale: { from: 1, to: 0 },
+        duration: 400,
+        delay: 200,
+        easing: easeInBack,
+      });
+
+      const linkAnimator = new Animator(link, {
+        scale: { from: 1, to: 0 },
+        duration: 400,
+        delay: 100,
+        easing: easeInBack,
       });
 
       containerAnimator.play();
-
-      return () => {
-        containerAnimator.pause();
-      };
+      titleAnimator.play();
+      linkAnimator.play();
     }
   }, [isOpen]);
 
@@ -135,8 +138,6 @@ export function Scratchable({ isOpen }: OverlayProps) {
 }
 
 function Card({ isOpen }: { isOpen: boolean }) {
-  const [isReady, setIsReady] = useState(false);
-
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -145,34 +146,38 @@ function Card({ isOpen }: { isOpen: boolean }) {
       return;
     }
 
-    if (!isOpen) {
-      return;
-    }
+    if (isOpen) {
+      const scratchable = new ScratchableRenderer({
+        container,
+        background: {
+          type: "linear-gradient",
+          gradients: [
+            { offset: 0, color: "#FA58D0" },
+            { offset: 0.5, color: "#DA81F5" },
+            { offset: 1, color: "#BE81F7" },
+          ],
+        },
+      });
 
-    const scratchable = new ScratchableRenderer({
-      container,
-      background: {
-        type: "linear-gradient",
-        gradients: [
-          { offset: 0, color: "#FA58D0" },
-          { offset: 0.5, color: "#DA81F5" },
-          { offset: 1, color: "#BE81F7" },
-        ],
-      },
-    });
+      scratchable.render().then(() => {
+        const containerAnimator = new Animator(container, {
+          scale: { from: 0, to: 1 },
+          duration: 400,
+          delay: 1800,
+          easing: easeOutBack,
+        });
 
-    scratchable.render().then(() => {
-      container.style.transform = "scale(0)";
-
+        containerAnimator.play();
+      });
+    } else {
       const containerAnimator = new Animator(container, {
-        scale: { from: 0, to: 1 },
+        scale: { from: 1, to: 0 },
         duration: 400,
-        delay: 1800,
-        easing: easeOutBack,
+        easing: easeInBack,
       });
 
       containerAnimator.play();
-    });
+    }
   }, [isOpen]);
 
   return (
