@@ -7,7 +7,7 @@ export function Header() {
         width: 100%;
 
         margin: 4rem 0 2rem;
-        padding: 0 16px;
+        padding: 0 24px;
       `}
     >
       <h1
