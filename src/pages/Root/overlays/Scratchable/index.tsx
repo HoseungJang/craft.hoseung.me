@@ -3,45 +3,71 @@ import { useEffect, useRef, useState } from "react";
 import { Scratchable as ScratchableRenderer } from "scratchable";
 import { AspectRatio } from "components/AspectRatio";
 import { OverlayProps } from "../../models/overlay";
-import { history } from "utils/history";
+import { Animator } from "utils/animation";
+import { easeOutBack, easeOutBounce, easeOutCubic, easeOutQuint } from "utils/easings";
 
 export function Scratchable({ isOpen }: OverlayProps) {
-  const [opacity, setOpacity] = useState(() => (history.state.animate ? 0 : 1));
+  const containerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const linkRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    let started: number | null = null;
-    let elapsed = 0;
-    const duration = 200;
+    const container = containerRef.current;
+    const title = titleRef.current;
+    const link = linkRef.current;
 
-    const animate = ({ from, to }: { from: number; to: number }) => {
-      const callback = (time: number) => {
-        if (started == null) {
-          started = time;
-        }
-
-        elapsed = time - started;
-
-        const progress = elapsed / duration;
-
-        const offset = to - from;
-
-        setOpacity(from + offset * progress);
-
-        if (progress < 1) {
-          requestAnimationFrame(callback);
-        }
-      };
-
-      requestAnimationFrame(callback);
-    };
+    if (container == null || title == null || link == null) {
+      return;
+    }
 
     if (isOpen) {
-      if (history.state.animate) {
-        animate({ from: 0, to: 1 });
-        history.replace(history.pathname, {});
-      }
+      container.style.opacity = "1";
+      container.style.transform = `translate3d(0px, ${window.innerHeight}px, 0px)`;
+
+      const containerAnimator = new Animator(container, {
+        translateY: { from: window.innerHeight, to: 0 },
+        duration: 800,
+        easing: easeOutBounce,
+      });
+
+      title.style.opacity = "0";
+      title.style.transform = "translate3d(0px, 70px, 0px)";
+
+      const titleAnimator = new Animator(title, {
+        opacity: { from: 0, to: 1 },
+        translateY: { from: 70, to: 0 },
+        duration: 400,
+        delay: 1000,
+        easing: easeOutCubic,
+      });
+
+      link.style.opacity = "0";
+      link.style.transform = "translate3d(0px, 70px, 0px)";
+
+      const linkAnimator = new Animator(link, {
+        opacity: { from: 0, to: 1 },
+        translateY: { from: 70, to: 0 },
+        duration: 400,
+        delay: 1200,
+        easing: easeOutCubic,
+      });
+
+      containerAnimator.play();
+      titleAnimator.play();
+      linkAnimator.play();
     } else {
-      animate({ from: 1, to: 0 });
+      const containerAnimator = new Animator(container, {
+        opacity: { from: 1, to: 0 },
+        scale: { from: 1, to: 1.5 },
+        duration: 1500,
+        easing: easeOutQuint,
+      });
+
+      containerAnimator.play();
+
+      return () => {
+        containerAnimator.pause();
+      };
     }
   }, [isOpen]);
 
@@ -57,14 +83,17 @@ export function Scratchable({ isOpen }: OverlayProps) {
         align-items: center;
 
         background-color: #e3cef6;
-        opacity: ${opacity};
       `}
+      ref={containerRef}
     >
       <div
         className={css`
           font-size: 2rem;
           font-weight: 500;
+
+          opacity: 0;
         `}
+        ref={titleRef}
       >
         Scratchable
       </div>
@@ -74,7 +103,10 @@ export function Scratchable({ isOpen }: OverlayProps) {
           margin-bottom: 1rem;
 
           text-decoration: underline;
+
+          opacity: 0;
         `}
+        ref={linkRef}
       >
         https://github.com/HoseungJang/scratchable
       </a>
@@ -85,21 +117,25 @@ export function Scratchable({ isOpen }: OverlayProps) {
         `}
       >
         <AspectRatio width={1} height={0.8}>
-          <Card />
+          <Card isOpen={isOpen} />
         </AspectRatio>
       </div>
     </div>
   );
 }
 
-function Card() {
-  const [ready, setReady] = useState(false);
+function Card({ isOpen }: { isOpen: boolean }) {
+  const [isReady, setIsReady] = useState(false);
 
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = ref.current;
     if (container == null) {
+      return;
+    }
+
+    if (!isOpen) {
       return;
     }
 
@@ -115,8 +151,19 @@ function Card() {
       },
     });
 
-    scratchable.render().then(() => setReady(true));
-  }, []);
+    scratchable.render().then(() => {
+      container.style.transform = "scale(0)";
+
+      const containerAnimator = new Animator(container, {
+        scale: { from: 0, to: 1 },
+        duration: 400,
+        delay: 1800,
+        easing: easeOutBack,
+      });
+
+      containerAnimator.play();
+    });
+  }, [isOpen]);
 
   return (
     <div
@@ -135,9 +182,7 @@ function Card() {
 
         border-radius: 24px;
 
-        opacity: ${ready ? 1 : 0};
-
-        transition: opacity 0.2s;
+        transform: scale(0);
 
         overflow: hidden;
 
