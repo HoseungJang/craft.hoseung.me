@@ -27,3 +27,14 @@ export function easeOutBack(x: number): number {
 export function easeOutQuint(x: number): number {
   return 1 - Math.pow(1 - x, 5);
 }
+
+export function easeInBack(x: number): number {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+
+  return c3 * x * x * x - c1 * x * x;
+}
+
+export function easeInOutQuart(x: number): number {
+  return x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2;
+}
