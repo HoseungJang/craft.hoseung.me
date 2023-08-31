@@ -2,16 +2,15 @@ import { Background } from "./components/Background";
 import { Header } from "./components/Header";
 import { Layout } from "./components/Layout";
 import { Main } from "./components/Main";
-import { OverlaySwitch } from "./components/OverlaySwitch";
+import { OverlayProvider } from "./contexts/Overlay";
 
 export function Root() {
   return (
-    <>
+    <OverlayProvider>
       <Layout background={<Background />}>
         <Header />
         <Main />
       </Layout>
-      <OverlaySwitch />
-    </>
+    </OverlayProvider>
   );
 }

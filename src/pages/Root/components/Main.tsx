@@ -1,13 +1,14 @@
 import { css } from "@emotion/css";
 import { AspectRatio } from "components/AspectRatio";
 import { useViewportSize } from "hooks/useViewportSize";
-import { ReactNode, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { history } from "utils/history";
 import { OVERLAY_ROUTES } from "../constants/overlay";
 import { OverlayRoute } from "../models/overlay";
 import { Column } from "./Column";
 import { Row } from "./Row";
 import { FullFadeInImage } from "./FullFadeInImage";
+import { useOverlay } from "../contexts/Overlay";
 
 export function Main() {
   const [vw] = useViewportSize();
@@ -41,55 +42,79 @@ export function Main() {
           <Column key={index}>
             {column.map((row, index) => (
               <Row key={index}>
-                <a
-                  href={row.pathname}
-                  onClick={(e) => {
-                    if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
-                      return;
-                    }
-
-                    e.preventDefault();
-                    history.push(row.pathname, { animate: true });
-                  }}
-                >
-                  <div
-                    className={css`
-                      padding: 16px;
-                    `}
-                  >
-                    <AspectRatio width={row.thumbnail.ratio.width} height={row.thumbnail.ratio.height}>
-                      <div
-                        className={css`
-                          width: 100%;
-                          height: 100%;
-
-                          border-radius: 16px;
-
-                          overflow: hidden;
-
-                          isolation: isolate;
-                        `}
-                      >
-                        <FullFadeInImage src={row.thumbnail.url} alt={row.title} />
-                      </div>
-                    </AspectRatio>
-                    <div
-                      className={css`
-                        margin-top: 12px;
-
-                        font-size: 1.4rem;
-                        font-weight: 500;
-                      `}
-                    >
-                      {row.title}
-                    </div>
-                  </div>
-                </a>
+                <Item {...row} />
               </Row>
             ))}
           </Column>
         ))}
       </div>
     </main>
+  );
+}
+
+function Item({ pathname, thumbnail, title, component }: OverlayRoute) {
+  const overlay = useOverlay();
+
+  useEffect(() => {
+    if (history.pathname === pathname) {
+      overlay.open(component);
+    }
+
+    const unlisten = history.listen((e) => {
+      if (e.pathname === pathname) {
+        overlay.open(component);
+      } else {
+        overlay.close();
+      }
+    });
+
+    return () => unlisten();
+  }, [overlay, pathname, component]);
+
+  return (
+    <a
+      href={pathname}
+      onClick={(e) => {
+        if (e.metaKey || e.altKey || e.ctrlKey || e.shiftKey) {
+          return;
+        }
+
+        e.preventDefault();
+        history.push(pathname);
+      }}
+    >
+      <div
+        className={css`
+          padding: 16px;
+        `}
+      >
+        <AspectRatio width={thumbnail.ratio.width} height={thumbnail.ratio.height}>
+          <div
+            className={css`
+              width: 100%;
+              height: 100%;
+
+              border-radius: 16px;
+
+              overflow: hidden;
+
+              isolation: isolate;
+            `}
+          >
+            <FullFadeInImage src={thumbnail.url} alt={title} />
+          </div>
+        </AspectRatio>
+        <div
+          className={css`
+            margin-top: 12px;
+
+            font-size: 1.4rem;
+            font-weight: 500;
+          `}
+        >
+          {title}
+        </div>
+      </div>
+    </a>
   );
 }
