@@ -1,3 +1,5 @@
+import { clamp } from "./clamp";
+
 export interface Animation {
   opacity?: AnimationProperty;
   translateX?: AnimationProperty;
@@ -47,7 +49,11 @@ export class Animator {
       return;
     }
 
-    this.animationProgress = this.animationProgress + (timestamp - this.prevFrameTimestamp) / this.animation.duration;
+    this.animationProgress = clamp(
+      this.animationProgress + (timestamp - this.prevFrameTimestamp) / this.animation.duration,
+      0,
+      1
+    );
 
     const easingProgress = this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
