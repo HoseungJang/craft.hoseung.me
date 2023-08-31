@@ -140,6 +140,8 @@ function Card() {
         transition: opacity 0.2s;
 
         overflow: hidden;
+
+        isolation: isolate;
       `}
       ref={ref}
     >
