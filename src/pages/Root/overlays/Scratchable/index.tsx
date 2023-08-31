@@ -5,21 +5,11 @@ import { AspectRatio } from "components/AspectRatio";
 import { OverlayProps } from "../../models/overlay";
 import { Animator } from "utils/animation";
 import { easeInBack, easeInOutQuart, easeOutBack, easeOutBounce, easeOutCubic } from "utils/easings";
-import { scrollLock } from "utils/scroll";
 
 export function Scratchable({ isOpen }: OverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const linkRef = useRef<HTMLAnchorElement>(null);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const unlock = scrollLock();
-    return () => unlock();
-  }, [isOpen]);
 
   useEffect(() => {
     const container = containerRef.current;

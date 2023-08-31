@@ -1,3 +1,4 @@
+import { css } from "@emotion/css";
 import {
   Fragment,
   ReactNode,
@@ -6,13 +7,14 @@ import {
   forwardRef,
   useCallback,
   useContext,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useRef,
   useState,
 } from "react";
 import { OverlayComponent } from "../../models/overlay";
-import { css } from "@emotion/css";
+import { scrollLock } from "utils/scroll";
 
 interface OverlayContext {
   mount: (id: string, element: ReactNode) => void;
@@ -88,6 +90,15 @@ const OverlayController = forwardRef(
     const close = useCallback(() => setIsOpen(false), []);
 
     useImperativeHandle(ref, () => ({ close }));
+
+    useEffect(() => {
+      if (!isOpen) {
+        return;
+      }
+
+      const unlock = scrollLock();
+      return () => unlock();
+    }, [isOpen]);
 
     return (
       <div
