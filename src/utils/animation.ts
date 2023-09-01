@@ -5,6 +5,8 @@ export interface Animation {
   translateX?: TranslateProperty;
   translateY?: TranslateProperty;
   scale?: AnimationProperty;
+  rotateX?: AnimationProperty;
+  rotateY?: AnimationProperty;
   width?: AnimationProperty;
   height?: AnimationProperty;
   duration: number;
@@ -101,13 +103,13 @@ export class Animator {
       this.element.style.height = `${from + (to - from) * easingProgress}px`;
     }
 
-    if (this.animation.translateX != null || this.animation.translateY != null || this.animation.scale != null) {
-      const translateX = (() => {
-        if (this.animation.translateX == null) {
-          return 0;
+    const translate3d = (() => {
+      const values = [this.animation.translateX, this.animation.translateY].map((property) => {
+        if (property == null) {
+          return null;
         }
 
-        const { from, to, easing, unit = "px" } = this.animation.translateX;
+        const { from, to, easing, unit = "px" } = property;
 
         const easingProgress =
           easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
@@ -115,39 +117,59 @@ export class Animator {
         const value = from + (to - from) * easingProgress;
 
         return `${value}${unit}`;
-      })();
+      });
 
-      const translateY = (() => {
-        if (this.animation.translateY == null) {
-          return 0;
-        }
+      if (values.every((value) => value == null)) {
+        return null;
+      }
 
-        const { from, to, easing, unit = "px" } = this.animation.translateY;
+      const [x, y] = values;
 
-        const easingProgress =
-          easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
+      return `translate3d(${x ?? 0}, ${y ?? 0}, 0)`;
+    })();
 
-        const value = from + (to - from) * easingProgress;
+    const scale = (() => {
+      if (this.animation.scale == null) {
+        return null;
+      }
 
-        return `${value}${unit}`;
-      })();
+      const { from, to, easing } = this.animation.scale;
 
-      const scale = (() => {
-        if (this.animation.scale == null) {
-          return 1;
-        }
+      const easingProgress =
+        easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
-        const { from, to, easing } = this.animation.scale;
+      return `scale(${from + (to - from) * easingProgress})`;
+    })();
 
-        const easingProgress =
-          easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
+    const rotateX = (() => {
+      if (this.animation.rotateX == null) {
+        return null;
+      }
 
-        return from + (to - from) * easingProgress;
-      })();
+      const { from, to, easing } = this.animation.rotateX;
 
-      const rotateX = () => {};
+      const easingProgress =
+        easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
-      this.element.style.transform = `translate3d(${translateX}, ${translateY}, 0px) scale(${scale})`;
+      return `rotateX(${from + (to - from) * easingProgress}deg)`;
+    })();
+
+    const rotateY = (() => {
+      if (this.animation.rotateY == null) {
+        return null;
+      }
+
+      const { from, to, easing } = this.animation.rotateY;
+
+      const easingProgress =
+        easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
+
+      return `rotateY(${from + (to - from) * easingProgress}deg)`;
+    })();
+
+    const transform = [translate3d, scale, rotateX, rotateY].filter((func) => func != null).join(", ");
+    if (transform.length > 0) {
+      this.element.style.transform = transform;
     }
 
     if (this.animation.opacity != null) {
