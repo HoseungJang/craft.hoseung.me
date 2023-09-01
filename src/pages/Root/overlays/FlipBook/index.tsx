@@ -118,16 +118,25 @@ export function FlipBook({ isOpen }: OverlayProps) {
         flipBottomShadowAnimator.seek(1);
       };
     } else {
-      const containerAnimator = new Animator(container, {
-        translateX: { from: 0, to: -100, unit: "%" },
+      const containerAnimator1 = new Animator(container, {
+        rotateY: { from: 0, to: 90 },
         duration: 800,
         easing: easeOutCubic,
       });
 
-      containerAnimator.play();
+      const containerAnimator2 = new Animator(container, {
+        opacity: { from: 1, to: 0 },
+        duration: 400,
+        delay: 800,
+        easing: easeOutCubic,
+      });
+
+      containerAnimator1.play();
+      containerAnimator2.play();
 
       return () => {
-        containerAnimator.seek(1);
+        containerAnimator1.seek(1);
+        containerAnimator2.seek(1);
       };
     }
   }, [isOpen]);
@@ -221,7 +230,7 @@ export function FlipBook({ isOpen }: OverlayProps) {
         width: 100%;
         height: 100%;
 
-        perspective: 900px;
+        perspective: 2000px;
       `}
     >
       <div
