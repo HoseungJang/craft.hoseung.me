@@ -56,6 +56,29 @@ export class Animator {
       1
     );
 
+    this.applyStyles();
+
+    if (this.animationProgress >= 1) {
+      this.prevFrameTimestamp = null;
+      this.frameId = null;
+      return;
+    }
+
+    this.prevFrameTimestamp = timestamp;
+    this.requestFrame();
+  }
+
+  private requestFrame() {
+    this.frameId = requestAnimationFrame((timestamp) => this.animate(timestamp));
+  }
+
+  private cancelFrame() {
+    if (this.frameId != null) {
+      cancelAnimationFrame(this.frameId);
+    }
+  }
+
+  private applyStyles() {
     if (this.animation.width != null) {
       const { from, to, easing } = this.animation.width;
 
@@ -125,25 +148,6 @@ export class Animator {
 
       this.element.style.opacity = `${from + (to - from) * easingProgress}`;
     }
-
-    if (this.animationProgress >= 1) {
-      this.prevFrameTimestamp = null;
-      this.frameId = null;
-      return;
-    }
-
-    this.prevFrameTimestamp = timestamp;
-    this.requestFrame();
-  }
-
-  private requestFrame() {
-    this.frameId = requestAnimationFrame((timestamp) => this.animate(timestamp));
-  }
-
-  private cancelFrame() {
-    if (this.frameId != null) {
-      cancelAnimationFrame(this.frameId);
-    }
   }
 
   public play() {
@@ -152,6 +156,7 @@ export class Animator {
 
   public seek(progress: number) {
     this.animationProgress = progress;
+    this.applyStyles();
   }
 
   public pause() {
