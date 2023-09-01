@@ -46,6 +46,12 @@ export function Scratchable({ isOpen }: OverlayProps) {
       containerAnimator.play();
       titleAnimator.play();
       linkAnimator.play();
+
+      return () => {
+        containerAnimator.seek(1);
+        titleAnimator.seek(1);
+        linkAnimator.seek(1);
+      };
     } else {
       const containerAnimator = new Animator(container, {
         translateY: { from: 0, to: window.innerHeight },
@@ -71,6 +77,12 @@ export function Scratchable({ isOpen }: OverlayProps) {
       containerAnimator.play();
       titleAnimator.play();
       linkAnimator.play();
+
+      return () => {
+        containerAnimator.seek(1);
+        titleAnimator.seek(1);
+        linkAnimator.seek(1);
+      };
     }
   }, [isOpen]);
 
@@ -149,16 +161,18 @@ function Card({ isOpen }: { isOpen: boolean }) {
         },
       });
 
-      scratchable.render().then(() => {
-        const containerAnimator = new Animator(container, {
-          scale: { from: 0, to: 1 },
-          duration: 400,
-          delay: 1800,
-          easing: easeOutBack,
-        });
-
-        containerAnimator.play();
+      const containerAnimator = new Animator(container, {
+        scale: { from: 0, to: 1 },
+        duration: 400,
+        delay: 1800,
+        easing: easeOutBack,
       });
+
+      scratchable.render().then(() => containerAnimator.play());
+
+      return () => {
+        containerAnimator.seek(1);
+      };
     } else {
       const containerAnimator = new Animator(container, {
         scale: { from: 1, to: 0 },
@@ -167,6 +181,10 @@ function Card({ isOpen }: { isOpen: boolean }) {
       });
 
       containerAnimator.play();
+
+      return () => {
+        containerAnimator.seek(1);
+      };
     }
   }, [isOpen]);
 
