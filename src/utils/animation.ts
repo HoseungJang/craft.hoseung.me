@@ -15,6 +15,7 @@ export interface Animation {
 interface AnimationProperty {
   from: number;
   to: number;
+  easing?: (progress: number) => number;
 }
 
 export class Animator {
@@ -55,16 +56,20 @@ export class Animator {
       1
     );
 
-    const easingProgress = this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
-
     if (this.animation.width != null) {
-      const { from, to } = this.animation.width;
+      const { from, to, easing } = this.animation.width;
+
+      const easingProgress =
+        easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
       this.element.style.width = `${from + (to - from) * easingProgress}px`;
     }
 
     if (this.animation.height != null) {
-      const { from, to } = this.animation.height;
+      const { from, to, easing } = this.animation.height;
+
+      const easingProgress =
+        easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
       this.element.style.height = `${from + (to - from) * easingProgress}px`;
     }
@@ -75,7 +80,10 @@ export class Animator {
           return 0;
         }
 
-        const { from, to } = this.animation.translateX;
+        const { from, to, easing } = this.animation.translateX;
+
+        const easingProgress =
+          easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
         return from + (to - from) * easingProgress;
       })();
@@ -85,7 +93,10 @@ export class Animator {
           return 0;
         }
 
-        const { from, to } = this.animation.translateY;
+        const { from, to, easing } = this.animation.translateY;
+
+        const easingProgress =
+          easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
         return from + (to - from) * easingProgress;
       })();
@@ -95,7 +106,10 @@ export class Animator {
           return 1;
         }
 
-        const { from, to } = this.animation.scale;
+        const { from, to, easing } = this.animation.scale;
+
+        const easingProgress =
+          easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
         return from + (to - from) * easingProgress;
       })();
@@ -104,7 +118,10 @@ export class Animator {
     }
 
     if (this.animation.opacity != null) {
-      const { from, to } = this.animation.opacity;
+      const { from, to, easing } = this.animation.opacity;
+
+      const easingProgress =
+        easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
       this.element.style.opacity = `${from + (to - from) * easingProgress}`;
     }
@@ -131,6 +148,10 @@ export class Animator {
 
   public play() {
     this.requestFrame();
+  }
+
+  public seek(progress: number) {
+    this.animationProgress = progress;
   }
 
   public pause() {
