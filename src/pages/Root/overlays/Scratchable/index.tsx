@@ -115,7 +115,7 @@ export function Scratchable({ isOpen }: OverlayProps) {
       <a
         href="https://github.com/HoseungJang/scratchable"
         className={css`
-          margin-bottom: 1rem;
+          margin-bottom: 16px;
 
           text-decoration: underline;
 
