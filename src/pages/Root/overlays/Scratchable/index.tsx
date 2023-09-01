@@ -22,7 +22,7 @@ export function Scratchable({ isOpen }: OverlayProps) {
 
     if (isOpen) {
       const containerAnimator = new Animator(container, {
-        translateY: { from: window.innerHeight, to: 0 },
+        translateY: { from: 100, to: 0, unit: "%" },
         duration: 800,
         easing: easeOutBounce,
       });
@@ -54,7 +54,7 @@ export function Scratchable({ isOpen }: OverlayProps) {
       };
     } else {
       const containerAnimator = new Animator(container, {
-        translateY: { from: 0, to: window.innerHeight },
+        translateY: { from: 0, to: 100, unit: "%" },
         duration: 800,
         delay: 600,
         easing: easeInOutQuart,
