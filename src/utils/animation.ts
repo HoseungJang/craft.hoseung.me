@@ -2,8 +2,8 @@ import { clamp } from "./clamp";
 
 export interface Animation {
   opacity?: AnimationProperty;
-  translateX?: AnimationProperty;
-  translateY?: AnimationProperty;
+  translateX?: TranslateProperty;
+  translateY?: TranslateProperty;
   scale?: AnimationProperty;
   width?: AnimationProperty;
   height?: AnimationProperty;
@@ -16,6 +16,10 @@ interface AnimationProperty {
   from: number;
   to: number;
   easing?: (progress: number) => number;
+}
+
+interface TranslateProperty extends AnimationProperty {
+  unit?: "px" | "%";
 }
 
 export class Animator {
@@ -103,12 +107,14 @@ export class Animator {
           return 0;
         }
 
-        const { from, to, easing } = this.animation.translateX;
+        const { from, to, easing, unit = "px" } = this.animation.translateX;
 
         const easingProgress =
           easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
-        return from + (to - from) * easingProgress;
+        const value = from + (to - from) * easingProgress;
+
+        return `${value}${unit}`;
       })();
 
       const translateY = (() => {
@@ -116,12 +122,14 @@ export class Animator {
           return 0;
         }
 
-        const { from, to, easing } = this.animation.translateY;
+        const { from, to, easing, unit = "px" } = this.animation.translateY;
 
         const easingProgress =
           easing?.(this.animationProgress) ?? this.animation.easing?.(this.animationProgress) ?? this.animationProgress;
 
-        return from + (to - from) * easingProgress;
+        const value = from + (to - from) * easingProgress;
+
+        return `${value}${unit}`;
       })();
 
       const scale = (() => {
@@ -137,7 +145,9 @@ export class Animator {
         return from + (to - from) * easingProgress;
       })();
 
-      this.element.style.transform = `translate3d(${translateX}px, ${translateY}px, 0px) scale(${scale})`;
+      const rotateX = () => {};
+
+      this.element.style.transform = `translate3d(${translateX}, ${translateY}, 0px) scale(${scale})`;
     }
 
     if (this.animation.opacity != null) {
